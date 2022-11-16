@@ -1,34 +1,27 @@
 import Layout from "../../components/Layout";
-import {useEffect, useState} from "react";
+import Link from "next/link";
+import NextNProgress from 'nextjs-progressbar';
 
 export default function Posts({posts}) {
-    // const [post, setPost] = useState([]);
-    //
-    // useEffect(() => {
-    //     async function load() {
-    //         const response = await fetch('http://localhost:4200/posts')
-    //         const posts = await response.json()
-    //
-    //         setPost(posts)
-    //     }
-    //
-    //     load()
-    // }, []);
+
     console.log(posts, 'posts')
     return(
         <Layout>
+            <NextNProgress color="#29D" startPosition={0.3} stopDelayMs={200} height={3} showOnShallow={true} />
+
             <ul>
                 {posts.map(item => <li key={item.id}>
-                    <h3>{item.title}</h3>
-                    <p>{item.body}</p>
+                    <Link href={`post/[id]`} as={`post/${item.id}`}>{item.title}</Link>
                 </li>)}
             </ul>
         </Layout>
     )
 }
 
-Posts.getInitialProps = async () => {
+export async function getServerSideProps() {
     const response = await fetch('http://localhost:4200/posts')
     const posts = await response.json()
-    return {posts}
+    return {
+        props: {posts}
+    }
 }
